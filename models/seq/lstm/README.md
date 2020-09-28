@@ -17,3 +17,5 @@ python .\generate_vocab.py  --input_fp .\token-seq --out_fp vocab.txt --input_ty
 ```
 python .\convert_token_seq_to_int_vector.py
 ```
+
+4. Run train.ipynb to train the model
