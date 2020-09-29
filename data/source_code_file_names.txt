@@ -1,2 +1,0 @@
-is_prime.py
-factorial.py
