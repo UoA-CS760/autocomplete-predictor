@@ -7,11 +7,13 @@ import torch
 ###################################################
 
 class Tokeniser(object):
-	def __init__(self, vocab_filepath="vocab.json", vocab_size=100002, max_seq_len=1000):
+	def __init__(self, vocab_filepath="vocab.json", vocab_size=100000, max_seq_len=1000):
 		vocab = json.load(open(vocab_filepath))
-		vocab_size = min(vocab_size, len(vocab))
+		vocab_size = min(vocab_size-2, len(vocab))
 		self.vocab = {vocab[i]: i for i in range(vocab_size)}
 		self.vocab.update({i: vocab[i] for i in range(vocab_size)})
+		self.vocab.update({vocab_size-1: UNK, vocab_size: PAD})
+		self.vocab.update({UNK: vocab_size-1, PAD: vocab_size})
 		self.max_seq_len = max_seq_len
 		self.unk, self.pad = self.vocab[UNK], self.vocab[PAD]
 	
