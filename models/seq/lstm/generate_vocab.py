@@ -32,7 +32,7 @@ def get_value(line, input_type):
 
 def main():
     parser = argparse.ArgumentParser(description="Create vocab for py150 dataset")
-    parser.add_argument("--n_vocab", "-n", type=int, default=1000)
+    parser.add_argument("--n_vocab", "-n", type=int, default=5000)
     parser.add_argument("--input_fp", "-i")
     parser.add_argument("--out_fp", "-o", default="/tmp/vocab.pkl")
     parser.add_argument(
