@@ -6,7 +6,7 @@ from data_prep import Tokeniser, Dataset
 np.random.seed(0)
 
 n_ctx = 1000
-vocab_size = 50002 #100000
+vocab_size = 50000 #100000
 def buildModel():
 	layer_norm_epsilon = 1e-6
 	n_head = 2 #6
@@ -26,6 +26,7 @@ batch_size=20
 # for _ in range(training_steps):
 X, y = data.getBatch(batch_size=batch_size)
 X, y = tokeniser.encode_batch(X, y, tensor=True)
+
 y_hot = torch.zeros(batch_size, vocab_size, dtype=torch.bool)
 for i, j in enumerate(y):
 	y_hot[i,j] = True
