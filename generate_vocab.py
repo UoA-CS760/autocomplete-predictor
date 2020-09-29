@@ -46,9 +46,9 @@ def main():
     logging.info("Reading from: {}".format(args.input_fp))
     logging.info("Input type: {}".format(args.input_type))
     vocab = Counter()
-    with open('../data/test_trees.json', "r") as f:
-        for line in file_tqdm(f):
-            vocab.update(get_value(json.loads(line.strip()), args.input_type))
+    # with open('../data/test_trees.json', "r") as f:
+    #     for line in file_tqdm(f):
+    #         vocab.update(get_value(json.loads(line.strip()), args.input_type))
     with open(args.input_fp, "r") as f:
         for line in file_tqdm(f):
             vocab.update(get_value(json.loads(line.strip()), args.input_type))
