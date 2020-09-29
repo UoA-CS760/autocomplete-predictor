@@ -4,13 +4,6 @@ import torch
 import numpy as np
 from data_prep import Tokeniser, Dataset
 
-import argparse
-
-parser = argparse.ArgumentParser(description='PyTorch Transformer Model')
-parser.add_argument('--cuda', action='store_true',
-                    help='use CUDA')
-args = parser.parse_args()
-
 np.random.seed(0)
 
 n_ctx = 1000
@@ -26,7 +19,8 @@ def build_model():
     return TransformerModel(vocab_size, loss_fn, n_layer, n_embd, n_ctx, n_head, layer_norm_epsilon)
 
 
-device = torch.device("cuda" if args.cuda else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print('Using device:', device)
 
 model = build_model().to(device)
 model.train()
