@@ -19,7 +19,7 @@ t = buildModel()
 t.train()
 t.zero_grad()
 
-tokeniser = Tokeniser('vocab50k.json', max_seq_len=n_ctx)
+tokeniser = Tokeniser('vocab50k.json', vocab_size, max_seq_len=n_ctx)
 data = Dataset()
 
 batch_size=20
