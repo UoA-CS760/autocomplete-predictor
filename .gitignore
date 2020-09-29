@@ -9,3 +9,6 @@ env/
 models/
 .ipynb_checkpoints/
 .idea/
+tmp/*
+data/python50k_eval.json
+data/python100k_train.json
