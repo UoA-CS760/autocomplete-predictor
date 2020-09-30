@@ -1,14 +1,14 @@
 # read vocab
 from csv import reader
 vocab = {}
-with open('vocab.txt') as f:
+with open('ast_vocab.txt') as f:
     words = f.read().splitlines()
     for wordIndex in words:
         word, index = wordIndex.split(' -----> ')
         vocab[word] = index
 
-with open('token-seq') as f:
-    with open('int-seq.txt', 'w' ,newline='\n') as output:
+with open('token_seq_ast') as f:
+    with open('int-seq-ast.txt', 'w' ,newline='\n') as output:
         codeFiles =  f.read().splitlines()
         for codeFile in codeFiles:
             tokens = codeFile[2:-5].strip().split(', ')
