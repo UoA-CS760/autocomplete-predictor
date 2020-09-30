@@ -33,8 +33,9 @@ def Predict(n_sequences, vocab, idToWord, int_seq_fp):
     # ratio of successful predicted tokens for each input sequence
     score = []
     keys_saved = []
+    keys_saved_ratio = []
     # top k suggestions
-    k = 5
+    k = 1
     with open(int_seq_fp) as fp:
         for line in fp:
             seq = [int(x) for x in line.split(',')[:-1]]
@@ -94,16 +95,18 @@ def Predict(n_sequences, vocab, idToWord, int_seq_fp):
 
             keys_saved_ratio = nc_pred_word/nc_seq_word
 
+
             print("Keys saved: ", nc_pred_word, "save ratio: ", keys_saved_ratio)
             score.append(sub_score/len(seq))
             keys_saved.append(nc_pred_word)
+            keys_saved_ratio.append(keys_saved_ratio)
             print(score)
             avg_score = sum(score) / len(score)
             print("Mean score: ", avg_score)
 
     with open('score_output.txt', 'w') as fp:
         for idx in range(0, len(score)):
-            fp.write('%d, %.4f\n' % (keys_saved[idx], score[idx]))
+            fp.write('%d, %.4f, %.4f\n' % (keys_saved[idx], keys_saved_ratio[idx], score[idx]))
 
     # print("accuracy for prediction for each code file")
     # print(score)
