@@ -1,4 +1,6 @@
 import numpy as np
+import argparse
+
 from keras.utils import to_categorical
 from keras.models import Sequential, load_model
 from keras.layers import Dense
@@ -39,38 +41,34 @@ def Predict(n_sequences, vocab, idToWord, int_seq_fp):
     with open(int_seq_fp) as fp:
         for line in fp:
             seq = [int(x) for x in line.split(',')[:-1]]
-            #print(seq)
+            print(seq)
             encoded_text_c1 = []
             encoded_text_c2 = []
             seq_word = []
             sub_score = 0
             for key in seq:
                 seq_word.append(idToWord[key])
-            #print(seq_word)
+            print(seq)
 
             temp = []
             for word in seq_word:
-                if word != '<unk_token>' and word != '<pad_token>':
-                    temp.append(len(word))
+                temp.append(len(word))
 
             nc_seq_word = sum(temp)
             pred_word = []
+            count = 0
             for idx in range(0, len(seq) - 1):
-                to_print = []
                 if (seq_len - idx) > 0:
                     encoded_text_c1.append(seq[idx])
                     value = int(vocab['<pad_token>'])
                     pad_encoded = pad_sequences([encoded_text_c1], maxlen=seq_len, truncating='pre', value=value)
-                    for x in pad_encoded[0]:
-                        to_print.append(idToWord[x])
-                    #print("Input sequence: ", to_print)
-                else:
-                    encoded_text_c2 = [seq[idx-4], seq[idx-3], seq[idx-2], seq[idx-1], seq[idx]]
-                    pad_encoded = pad_sequences([encoded_text_c2], maxlen=seq_len, truncating='pre', value=value)
-                    for x in pad_encoded[0]:
-                        to_print.append(idToWord[x])
-                    #print("Input sequence: ", to_print)
 
+                else:
+                    for jdx in range(seq_len - 1, -1, -1):
+                        encoded_text_c2.append(seq[idx - jdx])
+                    pad_encoded = pad_sequences([encoded_text_c2], maxlen=seq_len, truncating='pre', value=value)
+
+                count += 1
                 top_k = []
                 top_k_id = []
                 for token_id in (model.predict(pad_encoded)[0]).argsort()[-k:][::-1]:
@@ -78,28 +76,26 @@ def Predict(n_sequences, vocab, idToWord, int_seq_fp):
                     top_k.append(idToWord[token_id])
                     top_k_id.append(token_id)
 
-                #print("Top ", k, " Suggestions: ", top_k_id)
+                #print("Top ", k, " Suggestions: ", idToWord[top_k_id[0]])
                 next_token = seq[idx + 1]
-                #print("ground truth", next_token)
+                #print("ground truth", idToWord[next_token])
 
                 if next_token in top_k_id:
-                    if idToWord[next_token] != '<unk_token>' and idToWord[next_token] != '<pad_token>':
-                        pred_word.append(idToWord[next_token])
+                    pred_word.append(idToWord[next_token])
                     sub_score += 1
 
+            print(count)
             temp = []
             for word in pred_word:
                 temp.append(len(word))
 
             nc_pred_word = sum(temp)
-
             ks_ratio = nc_pred_word/nc_seq_word
 
-
-            print("Keys saved: ", nc_pred_word, "save ratio: ", keys_saved_ratio)
-            score.append(sub_score/len(seq))
+            score.append(sub_score/count)
             keys_saved.append(nc_pred_word)
             keys_saved_ratio.append(ks_ratio)
+            print("Keys saved: ", nc_pred_word, "save ratio: ", ks_ratio)
             print(score)
             avg_score = sum(score) / len(score)
             print("Mean score: ", avg_score)
@@ -107,30 +103,6 @@ def Predict(n_sequences, vocab, idToWord, int_seq_fp):
     with open('score_output.txt', 'w') as fp:
         for idx in range(0, len(score)):
             fp.write('%d, %.4f, %.4f\n' % (keys_saved[idx], keys_saved_ratio[idx], score[idx]))
-
-    # print("accuracy for prediction for each code file")
-    # print(score)
-    #
-    # avg_score = sum(score)/len(score)
-    # print("Mean score: ", avg_score)
-
-    encoded_text1 = [100000, 20, 10875, 17, 100000, 20, 100000, 17, 100000, 20, 100000, 17, 100000, 20, 264, 17, 25,
-                     1040, 4, 8, 0, 279, 2, 2515, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0,
-                     100000, 2, 100000, 1, 2, 0, 100000, 2, 43897, 1, 2, 0, 100000, 2, 37254, 1, 2, 0, 100000, 2, 100000,
-                     1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000,
-                     2, 6389, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 35]
-
-    encoded_text2 = [100000, 20, 10875, 17, 100000, 20, 100000, 17, 100000, 20, 100000, 17, 100000, 20, 264, 17, 25,
-                     1040, 4, 8, 0, 279, 2, 2515, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0,
-                     100000, 2, 100000, 1, 2, 0, 100000, 2, 43897, 1, 2, 0, 100000, 2, 37254, 1, 2, 0, 100000, 2,
-                     100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 100000, 1, 2,
-                     0, 100000, 2, 6389, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2,
-                     3512, 1, 2, 0, 100000, 2, 3512, 1, 2, 0, 100000, 2, 3512, 1, 2, 0, 100000, 2, 16227, 1, 2, 0,
-                     100000, 2, 460, 1, 2, 0, 100000, 2, 43898, 1, 2, 0, 100000, 2, 43898, 1, 2, 0, 100000, 2, 43898, 1,
-                     2, 0, 100000, 2, 43898, 1, 2, 0, 100000, 2, 43898, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2,
-                     100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 100000, 1, 2,
-                     0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2,
-                     100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 94887, 2, 2098, 1, 7]
 
 def GetVectors(vocab_fp, int_seq_fp):
     vocab = {}
@@ -167,6 +139,32 @@ def main():
     n_sequences, vocab, vocabulary_size, idToWord = GetVectors(vocab_fp, int_seq_fp)
     #Train(n_sequences, vocabulary_size)
     Predict(n_sequences, vocab, idToWord, int_seq_fp)
+
+    # parser = argparse.ArgumentParser(description="do stuff")
+    # parser.add_argument(
+    #     "--input", "-i", help="input code"
+    # )
+    # args = parser.parse_args()
+    # input_seq_word = args.input.split(" ")
+    # print(input_seq_word)
+    #
+    # input_seq_id = []
+    # for inp in input_seq_word:
+    #     for key, value in vocab.items():
+    #         if inp == key:
+    #             input_seq_id.append(value)
+    #
+    # train_inputs = n_sequences[:, :-1]
+    # seq_len = train_inputs.shape[1]
+    # #seq_len = 5
+    # model = load_model('model_9.hd5')
+    #
+    # value = int(vocab['<pad_token>'])
+    # pad_encoded = pad_sequences([input_seq_id], maxlen=seq_len, truncating='pre', value=value)
+    #
+    # print("top 5 suggestions: ")
+    # for token_id in (model.predict(pad_encoded)[0]).argsort()[-5:][::-1]:
+    #     print(idToWord[token_id])
 
 if __name__ == "__main__":
     main()
