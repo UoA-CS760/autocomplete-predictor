@@ -18,4 +18,5 @@ one is path based, another is traversal based
 ## For the sequence code LSTM model
 
 Look at the readme found here
+
 https://github.com/UoA-CS760/autocomplete-predictor/blob/master/models/seq/lstm/README.md
