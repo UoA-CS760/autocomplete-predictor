@@ -93,13 +93,13 @@ def Predict(n_sequences, vocab, idToWord, int_seq_fp):
 
             nc_pred_word = sum(temp)
 
-            keys_saved_ratio = nc_pred_word/nc_seq_word
+            ks_ratio = nc_pred_word/nc_seq_word
 
 
             print("Keys saved: ", nc_pred_word, "save ratio: ", keys_saved_ratio)
             score.append(sub_score/len(seq))
             keys_saved.append(nc_pred_word)
-            keys_saved_ratio.append(keys_saved_ratio)
+            keys_saved_ratio.append(ks_ratio)
             print(score)
             avg_score = sum(score) / len(score)
             print("Mean score: ", avg_score)
