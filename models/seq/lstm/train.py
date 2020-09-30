@@ -28,18 +28,32 @@ def Train(n_sequences, vocabulary_size):
 def Predict(n_sequences, vocab, idToWord, int_seq_fp):
     train_inputs = n_sequences[:, :-1]
     seq_len = train_inputs.shape[1]
-    model = load_model('mymodel.h5')
+    print("look back: ", seq_len)
+    model = load_model('model_9.hd5')
     # ratio of successful predicted tokens for each input sequence
     score = []
+    keys_saved = []
     # top k suggestions
     k = 5
     with open(int_seq_fp) as fp:
         for line in fp:
             seq = [int(x) for x in line.split(',')[:-1]]
-            print(seq)
+            #print(seq)
             encoded_text_c1 = []
             encoded_text_c2 = []
+            seq_word = []
             sub_score = 0
+            for key in seq:
+                seq_word.append(idToWord[key])
+            #print(seq_word)
+
+            temp = []
+            for word in seq_word:
+                if word != '<unk_token>' and word != '<pad_token>':
+                    temp.append(len(word))
+
+            nc_seq_word = sum(temp)
+            pred_word = []
             for idx in range(0, len(seq) - 1):
                 to_print = []
                 if (seq_len - idx) > 0:
@@ -48,13 +62,13 @@ def Predict(n_sequences, vocab, idToWord, int_seq_fp):
                     pad_encoded = pad_sequences([encoded_text_c1], maxlen=seq_len, truncating='pre', value=value)
                     for x in pad_encoded[0]:
                         to_print.append(idToWord[x])
-                    print("Input sequence: ", to_print)
+                    #print("Input sequence: ", to_print)
                 else:
                     encoded_text_c2 = [seq[idx-4], seq[idx-3], seq[idx-2], seq[idx-1], seq[idx]]
                     pad_encoded = pad_sequences([encoded_text_c2], maxlen=seq_len, truncating='pre', value=value)
                     for x in pad_encoded[0]:
                         to_print.append(idToWord[x])
-                    print("Input sequence: ", to_print)
+                    #print("Input sequence: ", to_print)
 
                 top_k = []
                 top_k_id = []
@@ -63,16 +77,39 @@ def Predict(n_sequences, vocab, idToWord, int_seq_fp):
                     top_k.append(idToWord[token_id])
                     top_k_id.append(token_id)
 
-                print("Top ", k, " Suggestions: ", top_k_id)
+                #print("Top ", k, " Suggestions: ", top_k_id)
                 next_token = seq[idx + 1]
-                print("ground truth", next_token)
+                #print("ground truth", next_token)
 
                 if next_token in top_k_id:
+                    if idToWord[next_token] != '<unk_token>' and idToWord[next_token] != '<pad_token>':
+                        pred_word.append(idToWord[next_token])
                     sub_score += 1
-                print("\n")
+
+            temp = []
+            for word in pred_word:
+                temp.append(len(word))
+
+            nc_pred_word = sum(temp)
+
+            keys_saved_ratio = nc_pred_word/nc_seq_word
+
+            print("Keys saved: ", nc_pred_word, "save ratio: ", keys_saved_ratio)
             score.append(sub_score/len(seq))
-    print("accuracy for prediction for each code file")
-    print(score)
+            keys_saved.append(nc_pred_word)
+            print(score)
+            avg_score = sum(score) / len(score)
+            print("Mean score: ", avg_score)
+
+    with open('score_output.txt', 'w') as fp:
+        for idx in range(0, len(score)):
+            fp.write('%d, %.4f\n' % (keys_saved[idx], score[idx]))
+
+    # print("accuracy for prediction for each code file")
+    # print(score)
+    #
+    # avg_score = sum(score)/len(score)
+    # print("Mean score: ", avg_score)
 
     encoded_text1 = [100000, 20, 10875, 17, 100000, 20, 100000, 17, 100000, 20, 100000, 17, 100000, 20, 264, 17, 25,
                      1040, 4, 8, 0, 279, 2, 2515, 1, 2, 0, 100000, 2, 100000, 1, 2, 0, 100000, 2, 100000, 1, 2, 0,
@@ -98,11 +135,11 @@ def GetVectors(vocab_fp, int_seq_fp):
     with open(vocab_fp) as f:
         words = f.read().splitlines()
         for wordIndex in words:
-            word, index = wordIndex.split(' : ')
+            word, index = wordIndex.split(' -----> ')
             vocab[word] = index
             idToWord[int(index)] = word
 
-    look_back_len = 5 + 1
+    look_back_len = 1000 + 1
     sequences = []
     vocabulary_size = len(vocab)
 
@@ -122,8 +159,8 @@ def GetVectors(vocab_fp, int_seq_fp):
     return n_sequences, vocab, vocabulary_size, idToWord
 
 def main():
-    vocab_fp = 'vocab.txt'
-    int_seq_fp = 'int-seq.txt'
+    vocab_fp = 'vocab_1k.txt'
+    int_seq_fp = 'int_seq_50_v1k.txt'
     n_sequences, vocab, vocabulary_size, idToWord = GetVectors(vocab_fp, int_seq_fp)
     #Train(n_sequences, vocabulary_size)
     Predict(n_sequences, vocab, idToWord, int_seq_fp)
