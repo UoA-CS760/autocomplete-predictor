@@ -41,6 +41,7 @@ class Unparser:
          Print the source for tree to file."""
         self.f = file
         self.future_imports = []
+        self.line_numbers = []
         self._indent = 0
         self.dispatch(tree)
         self.f.write("\n")
@@ -72,6 +73,13 @@ class Unparser:
             for t in tree:
                 self.dispatch(t)
             return
+        for attr in dir(tree):
+            if (attr == 'lineno'):
+                if (len(self.line_numbers) > 0):
+                    lastLineNumber = self.line_numbers[-1]
+                    if (tree.lineno != lastLineNumber):
+                        self.write("<new_line>")
+                self.line_numbers.append(tree.lineno)
         meth = getattr(self, "_" + tree.__class__.__name__)
         meth(tree)
 

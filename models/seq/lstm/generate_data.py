@@ -96,13 +96,9 @@ def main():
             fp = os.path.join(args.base_dir, line.strip())
             try:
                 aug_tokens, aug_types = my_tokenize(open(fp).read(), args.n_ctx)
-                print(aug_tokens)
-                print(aug_types)
                 for (tokens, ext), (types_, _) in zip(aug_tokens, aug_types):
                     if len(tokens) > 1:
                         if args.id_type == "leaf":
-                            print(get_leaf_ids(types_))
-                            print(get_value_ids(types_))
                             json.dump(get_leaf_ids(types_), fp=fout)
                         elif args.id_type == "value":
                             json.dump(get_value_ids(types_), fp=fout)
