@@ -58,11 +58,13 @@ class Unparser:
     def enter(self):
         "Print ':', and increase the indentation."
         self.write(":")
+        self.write("<indent>")
         self._indent += 1
 
     def leave(self):
         "Decrease the indentation level."
         self._indent -= 1
+        self.write("<dedent>")
 
     def dispatch(self, tree):
         "Dispatcher function, dispatching tree type T to method _T."
