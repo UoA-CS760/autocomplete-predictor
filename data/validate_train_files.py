@@ -1,7 +1,10 @@
 import os
 import shutil
+import time
 
 # checks that training files exist
+# note: some files may be the same name such as __init__.py
+# be sure to give the files a unique name if copying into one directory
 
 training_files_list = 'python10k_train.txt'
 
@@ -26,24 +29,26 @@ print(f'found {found_count}/{len(lines)} files')
 
 train_file_dir = os.path.join(os.getcwd(), 'train_files')
 
-copy_files_cmd = input(f'copy train files to {train_file_dir}? [y]: ').strip().lower()
+copy_files_cmd = input(f'Copy train files to {train_file_dir}?\nWarning! Will remove existing files in {train_file_dir} [y]: ').strip().lower()
 copy_files = (copy_files_cmd == '') or (copy_files_cmd == 'y')
 
 if copy_files:
-    if not os.path.exists(train_file_dir):
-        os.makedirs(train_file_dir)
+    # remove existing folder
+    if os.path.exists(train_file_dir):
+        shutil.rmtree(train_file_dir)
+
+    os.makedirs(train_file_dir)
 
     copy_count = 0
     for line in lines:
         src_fp = os.path.join(os.getcwd(), line)
-        filename = os.path.basename(line)
+        filename = line.replace('/', '_') # unique filename
         dest_fp = os.path.join(train_file_dir, filename)
 
-        if os.path.exists(dest_fp):
-            os.remove(dest_fp)
-
-        shutil.copy(src_fp, dest_fp)
-
+        shutil.copyfile(src_fp, dest_fp)
         copy_count += 1
+
+        if not os.path.exists(dest_fp):
+            print('not found!', dest_fp)
 
     print(f'{copy_count} files copied')
