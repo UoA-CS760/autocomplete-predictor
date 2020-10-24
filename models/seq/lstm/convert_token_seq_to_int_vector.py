@@ -4,7 +4,7 @@ vocab = {}
 with open('vocab.txt') as f:
     words = f.read().splitlines()
     for wordIndex in words:
-        word, index = wordIndex.split(' : ')
+        word, index = wordIndex.split(' -----> ')
         vocab[word] = index
 
 with open('token-seq') as f:

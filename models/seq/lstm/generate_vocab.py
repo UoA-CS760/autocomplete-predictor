@@ -32,7 +32,7 @@ def get_value(line, input_type):
 
 def main():
     parser = argparse.ArgumentParser(description="Create vocab for py150 dataset")
-    parser.add_argument("--n_vocab", "-n", type=int, default=100000)
+    parser.add_argument("--n_vocab", "-n", type=int, default=1000)
     parser.add_argument("--input_fp", "-i")
     parser.add_argument("--out_fp", "-o", default="/tmp/vocab.pkl")
     parser.add_argument(
@@ -71,7 +71,7 @@ def main():
     # dump vocab to file
     with open(args.out_fp, "w") as fout:
         for i, word in enumerate(vocab_to_keep):
-            fout.write("%s : %s\n" % (word, i))
+            fout.write("%s -----> %s\n" % (word, i))
         #pickle.dump(vocab_to_keep, fout)
     logging.info("Wrote {} vocab to: {}".format(len(vocab_to_keep), args.out_fp))
 

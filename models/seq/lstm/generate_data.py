@@ -91,7 +91,7 @@ def main():
 
     num_dps = 0
     logging.info("Loading files from: {}".format(args.base_dir))
-    with open(args.files_fp, "r") as f, open(args.out_fp, "w") as fout:
+    with open(args.files_fp, "r", errors='ignore') as f, open(args.out_fp, "w") as fout:
         for line in file_tqdm(f):
             fp = os.path.join(args.base_dir, line.strip())
             try:
