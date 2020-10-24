@@ -8,3 +8,5 @@ data/dps.txt
 env/
 .ipynb_checkpoints/
 .idea/
+/data/data/
+/data/train_files/
