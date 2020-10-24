@@ -41,6 +41,8 @@ class Unparser:
          Print the source for tree to file."""
         self.f = file
         self.future_imports = []
+        self.line_numbers = []
+        self.indent_changed = False
         self._indent = 0
         self.dispatch(tree)
         self.f.write("\n")
@@ -58,11 +60,16 @@ class Unparser:
     def enter(self):
         "Print ':', and increase the indentation."
         self.write(":")
+        self.write("<new_line>")
+        self.write("<indent>")
+        self.indent_changed = True
         self._indent += 1
 
     def leave(self):
         "Decrease the indentation level."
         self._indent -= 1
+        self.indent_changed = True
+        self.write("<dedent>")
 
     def dispatch(self, tree):
         "Dispatcher function, dispatching tree type T to method _T."
@@ -70,6 +77,16 @@ class Unparser:
             for t in tree:
                 self.dispatch(t)
             return
+        for attr in dir(tree):
+            if (attr == 'lineno'):
+                if (len(self.line_numbers) > 0):
+                    lastLineNumber = self.line_numbers[-1]
+                    if (tree.lineno != lastLineNumber):
+                        if (self.indent_changed == False):
+                            self.write("<new_line>")
+                        else:
+                            self.indent_changed = False
+                self.line_numbers.append(tree.lineno)
         meth = getattr(self, "_" + tree.__class__.__name__)
         meth(tree)
 

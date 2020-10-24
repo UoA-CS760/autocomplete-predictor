@@ -1,5 +1,3 @@
-is_prime.py
-factorial.py
 training\00\wikihouse\urls.py
 training\0rpc\zerorpc-python\zerorpc\events.py
 training\0xadada\dockdj\app\manage.py
