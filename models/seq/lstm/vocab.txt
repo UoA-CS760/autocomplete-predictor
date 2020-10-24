@@ -1,37 +1,40 @@
 ( : 0
 ) : 1
 num : 2
-, : 3
-: : 4
-print : 5
-n : 6
-1 : 7
-i : 8
-if : 9
-== : 10
-else : 11
-factorial : 12
-= : 13
-0 : 14
-'is not a prime number' : 15
-'is' : 16
-407 : 17
-> : 18
-for : 19
-in : 20
-range : 21
-2 : 22
-% : 23
-'times' : 24
-// : 25
-break : 26
-'is a prime number' : 27
-def : 28
-return : 29
-or : 30
-* : 31
-- : 32
-5 : 33
-'Factorial of' : 34
-<unk_token> : 35
-<pad_token> : 36
+<new_line> : 3
+, : 4
+: : 5
+<indent> : 6
+<dedent> : 7
+print : 8
+n : 9
+1 : 10
+i : 11
+if : 12
+== : 13
+else : 14
+factorial : 15
+= : 16
+0 : 17
+'is not a prime number' : 18
+'is' : 19
+407 : 20
+> : 21
+for : 22
+in : 23
+range : 24
+2 : 25
+% : 26
+'times' : 27
+// : 28
+break : 29
+'is a prime number' : 30
+def : 31
+return : 32
+or : 33
+* : 34
+- : 35
+5 : 36
+'Factorial of' : 37
+<unk_token> : 38
+<pad_token> : 39

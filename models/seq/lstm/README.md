@@ -8,9 +8,9 @@ Source code file names to be added to data\source_code_file_names.txt and the co
 python generate_data.py --files_fp ..\..\..\data\source_code_file_names.txt --out_fp token-seq --base_dir ..\..\..\data\code\ token
 ```
 
-2. Run generate_vocab.py to create vocab file from the token-seq file and save in file 
+2. Run generate_vocab.py to create vocab file top 1000 from the token-seq file and save in file 
 ```
-python .\generate_vocab.py  --input_fp .\token-seq --out_fp vocab.txt --input_type source_code
+python .\generate_vocab.py  --input_fp .\token-seq --out_fp vocab.txt --input_type source_code --n_vocab 1000
 ```
 
 3. Convert token seq into integer vector by running convert_token_seq_to_int_vector.py and save to file int-seq.txt
