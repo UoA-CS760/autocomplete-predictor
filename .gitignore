@@ -10,3 +10,4 @@ env/
 .idea/
 /data/data/
 /data/train_files/
+/data/test_files/
