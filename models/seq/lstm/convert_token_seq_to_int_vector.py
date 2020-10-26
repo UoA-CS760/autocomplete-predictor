@@ -7,8 +7,8 @@ with open('vocab.txt') as f:
         word, index = wordIndex.split(' -----> ')
         vocab[word] = index
 
-with open('token-seq') as f:
-    with open('int-seq.txt', 'w' ,newline='\n') as output:
+with open('token_seq_50_test.txt') as f:
+    with open('int_seq_50_test.txt', 'w' ,newline='\n') as output:
         codeFiles =  f.read().splitlines()
         for codeFile in codeFiles:
             tokens = codeFile[2:-5].strip().split(', ')
